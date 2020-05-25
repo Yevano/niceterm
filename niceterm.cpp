@@ -17,8 +17,9 @@ typedef signed long long s64;
 typedef float f32;
 typedef double f64;
 
-struct console {
-    
+struct cell_console {
+    u32 cell_width = 8;
+    u32 cell_height = 21;
 };
 
 template<typename... arg_types>
@@ -45,7 +46,7 @@ void printv(string const& fstr, arg_type... args) {
     puts(cstr);
 }
 
-string set_color(uint32_t r, uint32_t g, uint32_t b) {
+string set_color(u32 r, u32 g, u32 b) {
     return move(formatv("\x1b[48;2;%;%;%m", r, g, b));
 }
 
@@ -57,15 +58,15 @@ void new_line() {
     printf("\n");
 }
 
-string test_square(auto length) {
+string test_square(s32 length) {
     string out;
-    int w = (float) length * 8 / 21;
+    s32 w = (f32) length * 8 / 21;
     
-    for(int i = 0; i < w; i++) {
-        for(int j = 0; j < length; j++) {
-            int r = (float) i / w * 255;
-            int g = 0;
-            int b = (float) j / length * 255;
+    for(s32 i = 0; i < w; i++) {
+        for(s32 j = 0; j < length; j++) {
+            s32 r = (f32) i / w * 255;
+            s32 g = 0;
+            s32 b = (f32) j / length * 255;
             out += set_color(r, g, b);
             out += " ";
             out += reset();
@@ -75,6 +76,17 @@ string test_square(auto length) {
     }
 
     return move(out);
+}
+
+
+
+void conprint(const auto& console, auto const& renderable) {
+    puts(render(console, renderable));
+}
+
+void putstr(string const& out_string) {
+    auto s = out_string.c_str();
+    puts(s);
 }
 
 int main() {
